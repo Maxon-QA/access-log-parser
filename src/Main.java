@@ -35,6 +35,7 @@ public class Main {
 
     public static void readFile() {
         final int CHECK_MAX_VALUE = 1024;
+        Statistics statistics = new Statistics();
 
         String botYandex = "YandexBot";
         String botGoogle = "Googlebot";
@@ -49,16 +50,21 @@ public class Main {
             String line;
 
             while ((line = reader.readLine()) != null) {
+                countString++;
                 int length = line.length();
 
                 if (length > CHECK_MAX_VALUE) {
                     throw new MaxLengthStringException(CHECK_MAX_VALUE, length);
                 }
+                if (line.charAt(line.length() - 1) != '"') {
+                    continue;
+                }
+                LogEntry logEntry = new LogEntry(line);
+                statistics.addEntry(logEntry);
 
                 int indexStart = line.indexOf('(');
                 int indexFinish = line.indexOf(')');
                 if (indexStart == -1 || indexFinish == -1 || indexStart > indexFinish) {
-                    countString++;
                     continue;
                 }
 
@@ -72,7 +78,6 @@ public class Main {
 
                     int indexForwardSlash = parts[1].indexOf('/');
                     if (indexForwardSlash == -1) {
-                        countString++;
                         continue;
                     }
                     String fragment = parts[1].substring(0, indexForwardSlash);
@@ -83,7 +88,6 @@ public class Main {
                         countBotGoogle++;
                     }
                 }
-                countString++;
             }
 
             double percentBotYandex = (double) countBotYandex / countString * 100;
@@ -92,6 +96,7 @@ public class Main {
             System.out.println("Число строк : " + countString);
             System.out.println("Доля запросов от YandexBot = " + percentBotYandex);
             System.out.println("Доля запросов от Googlebot = " + percentBotGoogle);
+            System.out.println("Объем часового трафика: " + statistics.getTrafficRate() / 1024 + " КБ");
             System.out.println("-------------------------------------------------------");
 
         } catch (Exception ex) {
