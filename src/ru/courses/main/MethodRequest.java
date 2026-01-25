@@ -1,3 +1,5 @@
+package ru.courses.main;
+
 public enum MethodRequest {
     GET,
     POST,

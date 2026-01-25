@@ -1,3 +1,5 @@
+package ru.courses.main;
+
 public class UserAgent {
 
     final String OS, browser;
@@ -51,7 +53,7 @@ public class UserAgent {
 
     @Override
     public String toString() {
-        return "UserAgent{" +
+        return "ru.courses.main.UserAgent{" +
                 "OS='" + OS + '\'' +
                 ", browser='" + browser + '\'' +
                 '}';
