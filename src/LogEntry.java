@@ -10,6 +10,8 @@ public class LogEntry {
     final MethodRequest methodRequest;
     final UserAgent userAgent;
 
+    private int cursorParse = 0;
+
     public LogEntry(String line) {
         String[] resultParsing = parsingLine(line);
         this.IP = resultParsing[0];
@@ -57,45 +59,70 @@ public class LogEntry {
     public String[] parsingLine(String line) {
         String[] result = new String[8];
 
-        //1 IP
-        int indexFinishIP = line.indexOf(' ');
-        result[0] = line.substring(0, indexFinishIP);
-
-        //2 dateTimeRequest
-        int indexStartDateTimeRequest = line.indexOf('[');
-        int indexFinishDateTimeRequest = line.indexOf(']');
-        result[1] = line.substring(indexStartDateTimeRequest + 1, indexFinishDateTimeRequest);
-
-        //3 methodRequest
-        int indexStartMethodRequest = line.indexOf('"', indexFinishDateTimeRequest);
-        int indexFinishMethodRequest = line.indexOf(' ', indexStartMethodRequest);
-        result[2] = line.substring(indexStartMethodRequest + 1, indexFinishMethodRequest);
-
-        //4 pathRequest
-        int indexStartPathRequest = line.indexOf('/', indexFinishMethodRequest);
-        int indexFinishPathRequest = line.indexOf(' ', indexStartPathRequest);
-        result[3] = line.substring(indexStartPathRequest, indexFinishPathRequest);
-
-        //5 codeRespond
-        int indexStartCodeRespond = line.indexOf("\" ", indexFinishPathRequest);
-        int indexFinishCodeRespond = line.indexOf(' ', indexStartCodeRespond + 2);
-        result[4] = line.substring(indexStartCodeRespond + 2, indexFinishCodeRespond);
-
-        //6 sizeRespond
-        int indexStartSizeRespond = line.indexOf(' ', indexFinishCodeRespond);
-        int indexFinishSizeRespond = line.indexOf(' ', indexStartSizeRespond + 1);
-        result[5] = line.substring(indexStartSizeRespond + 1, indexFinishSizeRespond);
-
-        //7 refer
-        int indexStartRefer = line.indexOf('"', indexFinishSizeRespond);
-        int indexFinishRefer = line.indexOf('"', indexStartRefer + 1);
-        result[6] = line.substring(indexStartRefer + 1, indexFinishRefer);
-
-        //8 userAgent
-        int indexStartUserAgent = line.indexOf('"', indexFinishRefer + 1);
-        int indexFinishUserAgent = line.indexOf('"', indexStartUserAgent + 1);
-        result[7] = line.substring(indexStartUserAgent + 1, indexFinishUserAgent);
+        parseIP(result, line);
+        parseDateTimeRequest(result, line);
+        parseMethodRequest(result, line);
+        parsePathRequest(result, line);
+        parseCodeRespond(result, line);
+        parseSizeRespond(result, line);
+        parseRefer(result, line);
+        parseUserAgent(result, line);
 
         return result;
+    }
+
+    private void parseIP(String[] result, String line) {
+        int indexFinish = line.indexOf(' ');
+        result[0] = line.substring(0, indexFinish);
+        cursorParse = indexFinish;
+    }
+
+    private void parseDateTimeRequest(String[] result, String line) {
+        int indexStart = line.indexOf('[');
+        int indexFinish = line.indexOf(']');
+        result[1] = line.substring(indexStart + 1, indexFinish);
+        cursorParse = indexFinish;
+    }
+
+    private void parseMethodRequest(String[] result, String line) {
+        int indexStart = line.indexOf('"', cursorParse);
+        int indexFinish = line.indexOf(' ', indexStart);
+        result[2] = line.substring(indexStart + 1, indexFinish);
+        cursorParse = indexFinish;
+    }
+
+    private void parsePathRequest(String[] result, String line) {
+        int indexStart = line.indexOf('/', cursorParse);
+        int indexFinish = line.indexOf(' ', indexStart);
+        result[3] = line.substring(indexStart, indexFinish);
+        cursorParse = indexFinish;
+    }
+
+    private void parseCodeRespond(String[] result, String line) {
+        int indexStart = line.indexOf("\" ", cursorParse);
+        int indexFinish = line.indexOf(' ', indexStart + 2);
+        result[4] = line.substring(indexStart + 2, indexFinish);
+        cursorParse = indexFinish;
+    }
+
+    private void parseSizeRespond(String[] result, String line) {
+        int indexStart = line.indexOf(' ', cursorParse);
+        int indexFinish = line.indexOf(' ', indexStart + 1);
+        result[5] = line.substring(indexStart + 1, indexFinish);
+        cursorParse = indexFinish;
+    }
+
+    private void parseRefer(String[] result, String line) {
+        int indexStart = line.indexOf('"', cursorParse);
+        int indexFinish = line.indexOf('"', indexStart + 1);
+        result[6] = line.substring(indexStart + 1, indexFinish);
+        cursorParse = indexFinish;
+    }
+
+    private void parseUserAgent(String[] result, String line) {
+        int indexStart = line.indexOf('"', cursorParse + 1);
+        int indexFinish = line.indexOf('"', indexStart + 1);
+        result[7] = line.substring(indexStart + 1, indexFinish);
+        cursorParse = indexFinish;
     }
 }

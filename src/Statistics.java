@@ -12,9 +12,6 @@ public class Statistics {
         this.maxTime = null;
     }
 
-    public Statistics() {
-    }
-
     public void addEntry(LogEntry logEntry) {
         totalTraffic += logEntry.getSizeRespond();
 

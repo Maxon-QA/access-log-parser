@@ -15,6 +15,7 @@ public class Main {
     }
 
     public static void checkFileExist() {
+        System.out.println("Введите директорию файла:");
         path = new Scanner(System.in).nextLine();
         File file = new File(path);
 
