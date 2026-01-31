@@ -6,11 +6,11 @@ import java.util.Locale;
 
 public class LogEntry {
 
-    final String IP, pathRequest, refer;
-    final int codeRespond, sizeRespond;
-    final LocalDateTime dateTimeRequest;
-    final MethodRequest methodRequest;
-    final UserAgent userAgent;
+    private final String IP, pathRequest, refer;
+    private final int codeRespond, sizeRespond;
+    private final LocalDateTime dateTimeRequest;
+    private final MethodRequest methodRequest;
+    private final UserAgent userAgent;
 
     private int cursorParse = 0;
 
@@ -95,7 +95,9 @@ public class LogEntry {
 
     private void parsePathRequest(String[] result, String line) {
         int indexStart = line.indexOf('/', cursorParse);
-        int indexFinish = line.indexOf(' ', indexStart);
+        int indexFinishCheck1 = line.indexOf('?', indexStart);
+        int indexFinishCheck2 = line.indexOf(' ', indexStart);
+        int indexFinish = (indexFinishCheck1 == -1 || indexFinishCheck2 < indexFinishCheck1) ? indexFinishCheck2 : indexFinishCheck1;
         result[3] = line.substring(indexStart, indexFinish);
         cursorParse = indexFinish;
     }
