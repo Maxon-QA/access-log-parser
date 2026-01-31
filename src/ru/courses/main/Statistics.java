@@ -9,14 +9,18 @@ public class Statistics {
     private long totalTraffic;
     private LocalDateTime minTime, maxTime;
     private final Set<String> pagesWebSite;
+    private final Set<String> pagesWebSiteNotFound;
     private final Map<String, Integer> countOS;
+    private final Map<String, Integer> countBrowser;
 
     {
         this.totalTraffic = 0L;
         this.minTime = null;
         this.maxTime = null;
         this.pagesWebSite = new HashSet<>();
+        this.pagesWebSiteNotFound = new HashSet<>();
         this.countOS = new HashMap<>();
+        this.countBrowser = new HashMap<>();
     }
 
     public void addEntry(LogEntry logEntry) {
@@ -32,6 +36,8 @@ public class Statistics {
 
         if (logEntry.getCodeRespond() == 200) {
             pagesWebSite.add(logEntry.getPathRequest());
+        } else if (logEntry.getCodeRespond() == 404) {
+            pagesWebSiteNotFound.add(logEntry.getPathRequest());
         }
 
         String thisOS = logEntry.getUserAgent().getOS();
@@ -39,10 +45,18 @@ public class Statistics {
             countOS.put(thisOS, 1);
         } else countOS.put(thisOS, countOS.get(thisOS) + 1);
 
+        String thisBrowser = logEntry.getUserAgent().getBrowser();
+        if (!countBrowser.containsKey(thisBrowser)) {
+            countBrowser.put(thisBrowser, 1);
+        } else countBrowser.put(thisBrowser, countBrowser.get(thisBrowser) + 1);
     }
 
     public Set<String> getPagesWebSite() {
         return pagesWebSite;
+    }
+
+    public Set<String> getPagesWebSiteNotFound() {
+        return pagesWebSiteNotFound;
     }
 
     public HashMap<String, Double> getStatOS() {
@@ -56,6 +70,21 @@ public class Statistics {
 
         for (String OS : countOS.keySet()) {
             resultMap.put(OS, Double.valueOf(countOS.get(OS)) / allCount);
+        }
+        return resultMap;
+    }
+
+    public HashMap<String, Double> getStatBrowser() {
+        int allCount = 0;
+        List<Integer> listCount = new ArrayList<>(countBrowser.values().stream().toList());
+        for (Integer integer : listCount) {
+            allCount += integer;
+        }
+
+        HashMap<String, Double> resultMap = new HashMap<>();
+
+        for (String browser : countBrowser.keySet()) {
+            resultMap.put(browser, Double.valueOf(countBrowser.get(browser)) / allCount);
         }
         return resultMap;
     }
