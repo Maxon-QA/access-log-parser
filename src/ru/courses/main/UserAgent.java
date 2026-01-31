@@ -2,7 +2,7 @@ package ru.courses.main;
 
 public class UserAgent {
 
-    final String OS, browser;
+    final private String OS, browser;
 
     public UserAgent(String line) {
         this.OS = parsingOS(line);
@@ -10,17 +10,17 @@ public class UserAgent {
     }
 
     public String parsingOS(String line) {
-        if (line.equals("-")) return null;
+        if (line.equals("-")) return "n/d";
 
         int IndexFinishToken = line.indexOf(' ');
         if (IndexFinishToken == -1) {
-            return null;
+            return "n/d";
         }
 
         int IndexStartSystemInformation = IndexFinishToken + 1;
         int IndexFinishSystemInformation = line.indexOf(')');
         if (line.charAt(IndexStartSystemInformation) != '(' || IndexFinishSystemInformation == -1) {
-            return null;
+            return "n/d";
         }
 
         String systemInformation = line.substring(IndexStartSystemInformation, IndexFinishSystemInformation);
@@ -32,11 +32,11 @@ public class UserAgent {
             return "Android";
         } else if (systemInformation.contains("Linux")) {
             return "Linux";
-        } else return null;
+        } else return "n/d";
     }
 
     public String parsingBrowser(String line) {
-        if (line.equals("-")) return null;
+        if (line.equals("-")) return "n/d";
 
         if (line.contains("Firefox")) {
             return "Firefox";
@@ -48,7 +48,15 @@ public class UserAgent {
             return "Safari";
         } else if (line.contains("KHTML, like Gecko") && (line.contains("Chrome/"))) {
             return "Chrome";
-        } else return "Other";
+        } else return "n/d";
+    }
+
+    public String getOS () {
+        return this.OS;
+    }
+
+    public String getBrowser () {
+        return this.browser;
     }
 
     @Override

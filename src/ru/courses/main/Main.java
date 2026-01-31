@@ -100,8 +100,9 @@ public class Main {
             System.out.println("Доля запросов от YandexBot = " + percentBotYandex);
             System.out.println("Доля запросов от Googlebot = " + percentBotGoogle);
             System.out.println("Объем часового трафика: " + statistics.getTrafficRate() / 1024 + " КБ");
+            System.out.println("Количество уникальных страниц сайтов: " + statistics.getPagesWebSite().size());
+            System.out.println("Статистика по операционным системам " + statistics.getStatOS());
             System.out.println("-------------------------------------------------------");
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
