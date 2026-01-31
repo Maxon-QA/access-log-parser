@@ -6,25 +6,39 @@ import java.util.*;
 
 public class Statistics {
 
+    private int countEntry;
     private long totalTraffic;
+    private int totalBot;
+    private int totalError;
     private LocalDateTime minTime, maxTime;
     private final Set<String> pagesWebSite;
     private final Set<String> pagesWebSiteNotFound;
+    private final Set<String> uniqUser;
     private final Map<String, Integer> countOS;
     private final Map<String, Integer> countBrowser;
 
     {
+        this.countEntry = 0;
         this.totalTraffic = 0L;
+        this.totalBot = 0;
+        this.totalError = 0;
         this.minTime = null;
         this.maxTime = null;
         this.pagesWebSite = new HashSet<>();
         this.pagesWebSiteNotFound = new HashSet<>();
+        this.uniqUser = new HashSet<>();
         this.countOS = new HashMap<>();
         this.countBrowser = new HashMap<>();
     }
 
     public void addEntry(LogEntry logEntry) {
+        countEntry++;
+
         totalTraffic += logEntry.getSizeRespond();
+
+        if (logEntry.getUserAgent().getIsBot()) totalBot++;
+
+        if (logEntry.getCodeRespond() >= 400 && logEntry.getCodeRespond() <= 599) totalError++;
 
         LocalDateTime dateTime = logEntry.getDateTimeRequest();
         if (minTime == null || minTime.isAfter(dateTime)) {
@@ -38,6 +52,10 @@ public class Statistics {
             pagesWebSite.add(logEntry.getPathRequest());
         } else if (logEntry.getCodeRespond() == 404) {
             pagesWebSiteNotFound.add(logEntry.getPathRequest());
+        }
+
+        if (!logEntry.getUserAgent().getIsBot()) {
+            uniqUser.add(logEntry.getIP());
         }
 
         String thisOS = logEntry.getUserAgent().getOS();
@@ -59,7 +77,7 @@ public class Statistics {
         return pagesWebSiteNotFound;
     }
 
-    public HashMap<String, Double> getStatOS() {
+    public HashMap<String, Double> statOS() {
         int allCount = 0;
         List<Integer> listCount = new ArrayList<>(countOS.values().stream().toList());
         for (int i = 0; i < listCount.size(); i++) {
@@ -74,7 +92,7 @@ public class Statistics {
         return resultMap;
     }
 
-    public HashMap<String, Double> getStatBrowser() {
+    public HashMap<String, Double> statBrowser() {
         int allCount = 0;
         List<Integer> listCount = new ArrayList<>(countBrowser.values().stream().toList());
         for (Integer integer : listCount) {
@@ -89,8 +107,23 @@ public class Statistics {
         return resultMap;
     }
 
-    public double getTrafficRate() {
-        double duration = Duration.between(minTime, maxTime).toHours();
+    public double trafficRate() {
+        double duration = (double) Duration.between(minTime, maxTime).toSeconds() / 3600;
         return totalTraffic / duration;
     }
+
+    public double visitRate() {
+        double duration = (double) Duration.between(minTime, maxTime).toSeconds() / 3600;
+        return (countEntry - totalBot) / duration;
+    }
+
+    public double errorRate() {
+        double duration = (double) Duration.between(minTime, maxTime).toSeconds() / 3600;
+        return totalError / duration;
+    }
+
+    public double averageUniqVisit() {
+        return ((double) (countEntry - totalBot) / uniqUser.size());
+    }
+
 }

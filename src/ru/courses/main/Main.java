@@ -97,19 +97,25 @@ public class Main {
             double percentBotGoogle = (double) countBotGoogle / countString * 100;
 
             System.out.println("Число строк : " + countString);
-            System.out.println("Доля запросов от YandexBot = " + percentBotYandex);
-            System.out.println("Доля запросов от Googlebot = " + percentBotGoogle);
-            System.out.println("Объем часового трафика: " + statistics.getTrafficRate() / 1024 + " КБ");
-            System.out.println("Количество уникальных страниц сайтов: " + statistics.getPagesWebSite().size());
-            System.out.println("Количество несуществующих страниц сайтов: " + statistics.getPagesWebSiteNotFound().size());
-            System.out.println("Статистика по операционным системам: " + statistics.getStatOS());
-            System.out.println("Статистика по браузерам: " + statistics.getStatBrowser());
-            System.out.println("-------------------------------------------------------");
+            //System.out.println("Доля запросов от YandexBot = " + percentBotYandex);
+            //System.out.println("Доля запросов от Googlebot = " + percentBotGoogle);
+            printStat(statistics);
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
+    public static void printStat(Statistics statistics) {
+        System.out.println("Объем часового трафика: " + statistics.trafficRate() / 1024 + " КБ");
+        System.out.println("Количество уникальных страниц сайтов: " + statistics.getPagesWebSite().size());
+        System.out.println("Количество несуществующих страниц сайтов: " + statistics.getPagesWebSiteNotFound().size());
+        System.out.println("Статистика по операционным системам: " + statistics.statOS());
+        System.out.println("Статистика по браузерам: " + statistics.statBrowser());
+        System.out.println("Количество посещений в час: " + statistics.visitRate());
+        System.out.println("Количество ошибок в час: " + statistics.errorRate());
+        System.out.println("Средняя посещаемость одним реальным пользователем: " + statistics.averageUniqVisit());
+        System.out.println("-------------------------------------------------------");
+    }
 }
 

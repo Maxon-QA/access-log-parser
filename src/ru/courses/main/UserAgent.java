@@ -3,10 +3,12 @@ package ru.courses.main;
 public class UserAgent {
 
     final private String OS, browser;
+    final private boolean isBot;
 
     public UserAgent(String line) {
         this.OS = parsingOS(line);
         this.browser = parsingBrowser(line);
+        this.isBot = parsingIsBot(line);
     }
 
     public String parsingOS(String line) {
@@ -51,19 +53,28 @@ public class UserAgent {
         } else return "n/d";
     }
 
-    public String getOS () {
+    public boolean parsingIsBot(String line) {
+        return (line.toLowerCase().contains("bot"));
+    }
+
+    public String getOS() {
         return this.OS;
     }
 
-    public String getBrowser () {
+    public String getBrowser() {
         return this.browser;
+    }
+
+    public boolean getIsBot() {
+        return this.isBot;
     }
 
     @Override
     public String toString() {
-        return "ru.courses.main.UserAgent{" +
+        return "UserAgent{" +
                 "OS='" + OS + '\'' +
                 ", browser='" + browser + '\'' +
+                ", isBot=" + isBot +
                 '}';
     }
 }

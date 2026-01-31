@@ -129,4 +129,19 @@ public class LogEntry {
         result[7] = line.substring(indexStart + 1, indexFinish);
         cursorParse = indexFinish;
     }
+
+    @Override
+    public String toString() {
+        return "LogEntry{" +
+                "IP='" + IP + '\'' +
+                ", pathRequest='" + pathRequest + '\'' +
+                ", refer='" + refer + '\'' +
+                ", codeRespond=" + codeRespond +
+                ", sizeRespond=" + sizeRespond +
+                ", dateTimeRequest=" + dateTimeRequest +
+                ", methodRequest=" + methodRequest +
+                ", userAgent=" + userAgent +
+                ", cursorParse=" + cursorParse +
+                '}';
+    }
 }
